@@ -121,15 +121,16 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
   }
 }
 
-/*
-tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("bdi") {
-  description = "Generates the BDI classes for this project."
+tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("api-config") {
+  description = "Generates the API config classes for this project."
   group = "openapi-generation"
   generatorName.set("java")
-  inputSpec.set("$rootDir/api-spec/bdi/openapi.yaml")
+  remoteInputSpec.set(
+    "https://raw.githubusercontent.com/pagopa/pagopa-infra/refs/heads/main/src/domains/apiconfig-app/api/apiconfig_api/v1/_openapi.json.tpl"
+  )
   outputDir.set(layout.buildDirectory.get().dir("generated").asFile.toString())
-  apiPackage.set("it.pagopa.generated.bdi.api")
-  modelPackage.set("it.pagopa.generated.bdi.model")
+  apiPackage.set("it.pagopa.generated.apiconfig.api")
+  modelPackage.set("it.pagopa.generated.apiconfig.model")
   generateApiDocumentation.set(false)
   generateApiTests.set(false)
   generateModelTests.set(false)
@@ -151,9 +152,9 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("bdi
     )
   )
 }
-*/
+
 tasks.withType<KotlinCompile> {
-  // dependsOn("bdi")
+  dependsOn("api-config")
   compilerOptions { jvmTarget.set(JvmTarget.JVM_21) }
 }
 
