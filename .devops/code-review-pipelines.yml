@@ -1,0 +1,66 @@
+
+variables:
+  BRANCH_NAME: $[ replace(variables['System.PullRequest.SourceBranch'], 'refs/heads/', '') ]
+  GRADLE_USER_HOME: $(Pipeline.Workspace)/.gradle
+trigger:
+ branches:
+  include:
+    - main
+
+pool:
+  vmImage: ubuntu-22.04
+
+stages:
+  - stage: BuildAndUnitTest
+    jobs:
+      - job: make_buildEndUnitTest
+        steps:
+          - task: Cache@2
+            inputs:
+              key: 'gradle | "$(Agent.OS)" | **/build.gradle.kts'
+              restoreKeys: |
+                gradle | "$(Agent.OS)"
+                gradle
+              path: $(GRADLE_USER_HOME)
+            displayName: Configure gradle caching
+
+          - task: SonarCloudPrepare@3
+            displayName: 'Prepare SonarCloud analysis configuration'
+            inputs:
+              SonarCloud: '$(SONARCLOUD_SERVICE_CONN)'
+              organization: '$(SONARCLOUD_ORG)'
+              scannerMode: Other
+              extraProperties: |
+                sonar.projectKey=$(SONARCLOUD_PROJECT_KEY)
+                sonar.projectName=$(SONARCLOUD_PROJECT_NAME)
+                sonar.coverage.exclusions=**/config/*,**/*Mock*,**/model/*
+                sonar.coverage.jacoco.xmlReportPaths=./build/reports/jacoco/test/jacocoTestReport.xml
+                sonar.junit.reportPaths=./build/test-results/test
+
+          - task: Gradle@3
+            inputs:
+              gradleWrapperFile: 'gradlew'
+              tasks: 'build'
+              publishJUnitResults: true
+              testResultsFiles: '**/TEST-*.xml'
+              codeCoverageToolOption: 'None'
+              codeCoverageClassFilesDirectories: 'build/classes/main/'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '1.21'
+              sonarQubeRunAnalysis: true
+
+          - task: SonarCloudPublish@3
+            displayName: 'Publish SonarCloud results on build summary'
+            inputs:
+              pollingTimeoutSec: '300'
+          - script: |
+              # stop the Gradle daemon to ensure no files are left open (impacting the save cache operation later)
+              ./gradlew --stop
+            displayName: Gradlew stop
+
+          - task: PublishCodeCoverageResults@2
+            inputs:
+              codeCoverageTool: 'JaCoCo'
+              summaryFileLocation: 'build/reports/jacoco/test/jacocoTestReport.xml'
+              reportDirectory: 'build/reports/jacoco/test/html'
+            displayName: 'Publish Code Coverage on Azure Devops'
