@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import reactor.util.retry.Retry
 
-@ConfigurationProperties(prefix = "apiconfig.client")
+@ConfigurationProperties(prefix = "apiconfig")
 data class ApiConfigClientProperties(
     val maxRetryAttempts: Long = 3,
     val retryBackoffDurationMs: Long = 1000,

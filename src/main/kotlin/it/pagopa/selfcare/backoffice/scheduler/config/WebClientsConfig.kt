@@ -44,7 +44,7 @@ class WebClientsConfig {
 
     @Bean
     fun ibanApiConfigApi(
-        @Value("\${bdi.server.uri}") serverUri: String,
+        @Value("\${apiconfig.server.uri}") serverUri: String,
         apiConfigWebClient: WebClient,
     ): IbansApi {
         val apiClient = ApiClient(apiConfigWebClient)
