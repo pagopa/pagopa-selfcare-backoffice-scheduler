@@ -58,3 +58,4 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+/api-config-mock/node_modules/

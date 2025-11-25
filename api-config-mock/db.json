@@ -1,0 +1,5 @@
+{
+  "delete_result": [
+    { "id": 1, "message": "IBAN deleted successfully" }
+  ]
+}

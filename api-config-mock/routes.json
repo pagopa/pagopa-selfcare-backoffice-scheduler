@@ -1,0 +1,3 @@
+{
+  "/creditorinstitutions/:creditorinstitutioncode/ibans/:ibanValue": "/delete_result/1"
+}
