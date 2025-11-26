@@ -3,6 +3,7 @@ package it.pagopa.selfcare.backoffice.scheduler.scheduledjob
 import it.pagopa.selfcare.backoffice.scheduler.documents.TaskStatus
 import it.pagopa.selfcare.backoffice.scheduler.repositories.ScheduledTaskRepository
 import java.time.Instant
+import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -13,10 +14,16 @@ import reactor.core.publisher.Mono
  */
 @Service
 class ProcessingRequestScheduler(private val repository: ScheduledTaskRepository) {
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(ProcessingRequestScheduler::class.java)
+    }
+
     private val MAX_CONCURRENCY = 8
 
     @Scheduled(cron = "\${iban-deletion-request-scheduled.execution.cron}")
     fun executeScheduledJobs() {
+        logger.info("Scheduler job started: Fetching PENDING tasks to execute.")
 
         repository
             .findAllByStatusAndScheduledExecutionDateBeforeAndCancellationRequestedIsFalse(

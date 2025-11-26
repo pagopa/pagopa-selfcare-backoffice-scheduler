@@ -21,7 +21,7 @@ data class ApiConfigClientProperties(
 @Component
 @EnableConfigurationProperties(ApiConfigClientProperties::class)
 class ApiConfigClient(
-    private val apiConfigIbansApi: IbansApi,
+    private val ibanApiConfigApi: IbansApi,
     private val properties: ApiConfigClientProperties,
 ) {
 
@@ -53,7 +53,7 @@ class ApiConfigClient(
         )
 
         val apiCall =
-            apiConfigIbansApi
+            ibanApiConfigApi
                 .deleteCreditorInstitutionsIban(creditorInstitutionCode, ibanValue, xRequestId)
                 .doOnSuccess {
                     logger.info(

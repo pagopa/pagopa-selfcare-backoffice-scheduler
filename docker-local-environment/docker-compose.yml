@@ -1,0 +1,53 @@
+services:
+  mongo:
+    container_name: mongo
+    image: mongo@sha256:c75092233f998275c7b2c3942bb897994adb709bc5b9b7d043cc642ec521b6c7
+    env_file: mongodb/mongodb.env
+    ports:
+      - "27017:27017"
+    networks:
+      - pagopa-backoffice-net
+    healthcheck:
+      test: echo 'db.runCommand({serverStatus:1}).ok' | mongosh admin --username admin --password password --quiet | grep 1
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 20s
+    volumes:
+      - ./mongodb/init-db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./mongodb/init-db/data/:/usr/local/data/:ro
+
+  app:
+    container_name: 'pagopa-selfcare-backoffice-scheduler'
+    platform: linux/amd64
+    build:
+      dockerfile: Dockerfile
+      context: ../
+    env_file:
+      - ./.env.local
+    ports:
+      - "8080:8080"
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - pagopa-backoffice-net
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  mongo-express:
+    container_name: mongo-express
+    image: mongo-express@sha256:1b23d7976f0210dbec74045c209e52fbb26d29b2e873d6c6fa3d3f0ae32c2a64
+    env_file: mongodb/mongo-express.env
+    ports:
+      - "8081:8081"
+    networks:
+      - pagopa-backoffice-net
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+networks:
+  pagopa-backoffice-net:
+    name: pagopa-backoffice-net
+    driver: bridge
