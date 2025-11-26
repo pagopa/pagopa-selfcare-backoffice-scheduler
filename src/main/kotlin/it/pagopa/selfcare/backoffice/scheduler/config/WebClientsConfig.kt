@@ -1,4 +1,4 @@
-package it.pagopa.accounting.reconciliation.bdi.ingestion.config
+package it.pagopa.selfcare.backoffice.scheduler.config
 
 import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.ReadTimeoutHandler

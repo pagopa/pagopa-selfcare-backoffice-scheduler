@@ -58,4 +58,4 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-/api-config-mock/node_modules/
+/docker-local-environment/api-config-mock/node_modules/
