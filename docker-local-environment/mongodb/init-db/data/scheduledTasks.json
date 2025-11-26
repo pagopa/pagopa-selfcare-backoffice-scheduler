@@ -1,0 +1,29 @@
+[
+  {
+    "_id": "65b53e83b4b8c9d2f1a3a4b5",
+    "type": "IBAN_DELETION",
+    "userId": "admin_ec_101",
+    "requestedAt": "2025-11-25T10:00:00Z",
+    "scheduledExecutionDate": "2025-11-27T08:00:00Z",
+    "status": "PENDING",
+    "cancellationRequested": false,
+    "data": {
+      "iban": "IT0000000000000000000000001",
+      "organizationId": "EC_001_BANK_A"
+    }
+  },
+  {
+    "_id": "65b53e83b4b8c9d2f1a3a4b7",
+    "type": "IBAN_DELETION",
+    "userId": "admin_ec_101",
+    "requestedAt": "2025-11-26T08:00:00Z",
+    "scheduledExecutionDate": "2025-11-27T07:00:00Z",
+    "status": "PENDING",
+    "cancellationRequested": true,
+    "cancellationRequestedAt": "2025-11-26T08:30:00Z",
+    "data": {
+      "iban": "IT0000000000000000000000002",
+      "organizationId": "EC_003_BANK_C"
+    }
+  }
+]
