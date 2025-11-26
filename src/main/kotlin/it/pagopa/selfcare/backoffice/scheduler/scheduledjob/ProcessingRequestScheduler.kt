@@ -1,51 +1,61 @@
 package it.pagopa.selfcare.backoffice.scheduler.scheduledjob
 
 import it.pagopa.selfcare.backoffice.scheduler.documents.TaskStatus
+import it.pagopa.selfcare.backoffice.scheduler.documents.TaskType
 import it.pagopa.selfcare.backoffice.scheduler.repositories.ScheduledTaskRepository
+import it.pagopa.selfcare.backoffice.scheduler.services.IbanDeletionService
 import java.time.Instant
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Mono
 
 /**
  * Scheduler responsible for executing all programmed processing requests. It acts as a dispatcher
  * based on the request 'type'.
  */
 @Service
-class ProcessingRequestScheduler(private val repository: ScheduledTaskRepository) {
+class ProcessingRequestScheduler(
+    private val repository: ScheduledTaskRepository,
+    private val ibanDeletionService: IbanDeletionService,
+) {
 
     companion object {
         private val logger = LoggerFactory.getLogger(ProcessingRequestScheduler::class.java)
+        private const val MAX_CONCURRENCY = 8
     }
 
-    private val MAX_CONCURRENCY = 8
-
     @Scheduled(cron = "\${iban-deletion-request-scheduled.execution.cron}")
-    fun executeScheduledJobs() {
-        logger.info("Scheduler job started: Fetching PENDING tasks to execute.")
+    fun executeScheduledIbanDeletionJobs() {
+        logger.info(
+            "Scheduler Iban deletion job started: Fetching ${TaskStatus.PENDING} tasks to execute related type ${TaskType.IBAN_DELETION}"
+        )
 
         repository
-            .findAllByStatusAndScheduledExecutionDateBeforeAndCancellationRequestedIsFalse(
-                status = TaskStatus.PENDING,
-                now = Instant.now(),
+            .findExecutableTasks(
+                status = TaskStatus.PENDING.toString(),
+                scheduledExecutionDate = Instant.now().toString(),
             )
             .flatMap(
-                { request ->
-                    println("processing task ${request.id} of type ${request.type}")
-                    Mono.just(request)
+                { task ->
+                    logger.info("Processing task ${task.id} of type ${task.type}")
+                    println(task)
+                    // Dispatch to the appropriate service based on task type
+                    when (task.type) {
+                        TaskType.IBAN_DELETION -> ibanDeletionService.processTask(task)
+                    }
                 },
                 MAX_CONCURRENCY,
             )
             .subscribe(
-                { completedRequest ->
-                    println(
-                        "Processing task completed: ${completedRequest.id} (${completedRequest.type})"
+                { completedTask ->
+                    logger.info(
+                        "Processing task completed: ${completedTask.id} (${completedTask.type})"
                     )
                 },
                 { error ->
-                    System.err.println(
-                        "Critical error during scheduler processing: ${error.message}"
+                    logger.error(
+                        "Critical error during scheduler processing: ${error.message}",
+                        error,
                     )
                 },
             )
