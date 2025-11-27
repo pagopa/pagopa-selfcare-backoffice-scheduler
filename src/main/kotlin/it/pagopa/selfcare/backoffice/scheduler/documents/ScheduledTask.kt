@@ -1,6 +1,5 @@
 package it.pagopa.selfcare.backoffice.scheduler.documents
 
-import java.time.Instant
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
@@ -33,11 +32,11 @@ data class ScheduledTask(
     val type: TaskType,
     val data: Map<String, Any>,
     val userId: String,
-    val requestedAt: Instant = Instant.now(),
-    val scheduledExecutionDate: Instant,
+    val requestedAt: String,
+    val scheduledExecutionDate: String,
     var status: TaskStatus = TaskStatus.PENDING,
     var cancellationRequested: Boolean = false,
-    var cancellationRequestedAt: Instant? = null,
-    var processedAt: Instant? = null,
-    var completedAt: Instant? = null,
+    var cancellationRequestedAt: String? = null,
+    var processedAt: String? = null,
+    var completedAt: String? = null,
 )

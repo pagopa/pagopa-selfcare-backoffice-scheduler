@@ -8,8 +8,8 @@
     "status": "PENDING",
     "cancellationRequested": false,
     "data": {
-      "iban": "IT0000000000000000000000001",
-      "organizationId": "EC_001_BANK_A"
+      "ibanValue": "IT0000000000000000000000001",
+      "creditorInstitutionCode": "EC_001_BANK_A"
     }
   },
   {
@@ -22,8 +22,8 @@
     "cancellationRequested": true,
     "cancellationRequestedAt": "2025-11-26T08:30:00Z",
     "data": {
-      "iban": "IT0000000000000000000000002",
-      "organizationId": "EC_003_BANK_C"
+      "ibanValue": "IT0000000000000000000000002",
+      "creditorInstitutionCode": "EC_003_BANK_C"
     }
   }
 ]
