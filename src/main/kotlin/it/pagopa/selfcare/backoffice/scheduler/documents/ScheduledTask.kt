@@ -3,6 +3,8 @@ package it.pagopa.selfcare.backoffice.scheduler.documents
 import java.time.Instant
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
+import org.springframework.data.mongodb.core.mapping.Field
+import org.springframework.data.mongodb.core.mapping.FieldType
 
 /**
  * Defines the type of scheduled task. This is crucial for the scheduler to dispatch the task to the
@@ -27,7 +29,7 @@ enum class TaskStatus {
  */
 @Document(collection = "scheduledTasks")
 data class ScheduledTask(
-    @Id val id: String? = null,
+    @Id @Field(targetType = FieldType.STRING) val id: String,
     val type: TaskType,
     val data: Map<String, Any>,
     val userId: String,
