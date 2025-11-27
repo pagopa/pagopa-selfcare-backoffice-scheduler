@@ -45,10 +45,12 @@ class WebClientsConfig {
     @Bean
     fun ibanApiConfigApi(
         @Value("\${apiconfig.server.uri}") serverUri: String,
+        @Value("\${apiconfig.server.apiKey}") apiKey: String,
         apiConfigWebClient: WebClient,
     ): IbansApi {
         val apiClient = ApiClient(apiConfigWebClient)
         apiClient.setBasePath(serverUri)
+        apiClient.setApiKey(apiKey)
         return IbansApi(apiClient)
     }
 }

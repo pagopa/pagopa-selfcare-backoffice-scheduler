@@ -10,14 +10,14 @@ microservice-chart:
     httpGet:
       path: /actuator/health/liveness
       port: 8080
-    initialDelaySeconds: 40
+    initialDelaySeconds: 60
     failureThreshold: 6
     periodSeconds: 10
   readinessProbe:
     httpGet:
       path: /actuator/health/readiness
       port: 8080
-    initialDelaySeconds: 40
+    initialDelaySeconds: 60
     failureThreshold: 6
     periodSeconds: 10
   deployment:
@@ -76,7 +76,7 @@ microservice-chart:
     IBAN_DELETION_REQUEST_JOB_EXECUTION_CRON: "0 0 * * * *"
     MONGODB_NAME: pagopaBackoffice
   envSecret:
-    PAGOPA_APIM_API_CONFIG_API_KEY_PAGOPA: pagopa-d-apim-api-config-key
+    API_CONFIG_SERVER_API_KEY: pagopa-d-apim-api-config-key
     MONGODB_CONNECTION_URI: cosmodbmongo-d-bopagopa-connection-string
   keyvault:
     name: "pagopa-d-selfcare-kv"
