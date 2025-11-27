@@ -1,0 +1,10 @@
+apiVersion: v2
+type: application
+version: 0.0.0
+appVersion: 0.0.0
+name: pagopa-selfcare-backoffice-scheduler
+description: Scheduler component within the Backoffice pagoPA system. Its core function is to autonomously execute scheduled operations requested by users (for example processes the planned deletion of IBANs on a future date specified by the Creditor Entity, ensuring the automation of this administrative task).
+dependencies:
+  - name: microservice-chart
+    repository: "https://pagopa.github.io/aks-microservice-chart-blueprint"
+    version: 8.1.1

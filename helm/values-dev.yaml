@@ -1,0 +1,97 @@
+microservice-chart:
+  namespace: "selfcare"
+  nameOverride: ""
+  fullnameOverride: "pagopa-selfcare-backoffice-scheduler"
+  image:
+    repository: pagopadcommonacr.azurecr.io/pagopaselfcarebackofficescheduler
+    tag: "0.0.0"
+    pullPolicy: Always
+  livenessProbe:
+    httpGet:
+      path: /actuator/health/liveness
+      port: 8080
+    initialDelaySeconds: 20
+    failureThreshold: 6
+    periodSeconds: 10
+  readinessProbe:
+    httpGet:
+      path: /actuator/health/readiness
+      port: 8080
+    initialDelaySeconds: 20
+    failureThreshold: 6
+    periodSeconds: 10
+  deployment:
+    create: true
+  service:
+    create: true
+    type: ClusterIP
+    ports:
+      - 8080
+  ingress:
+    create: true
+    host: "weudev.selfcare.internal.dev.platform.pagopa.it"
+    path: /pagopa-selfcare-backoffice-scheduler/(.*)
+    servicePort: 8080
+  serviceAccount:
+    create: false
+    annotations: {}
+    name: "selfcare-workload-identity"
+  podAnnotations: {}
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+  securityContext:
+    allowPrivilegeEscalation: false
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "300m"
+    limits:
+      memory: "512Mi"
+      cpu: "300m"
+  autoscaling:
+    enable: false
+  terminationGracePeriodSeconds: 30
+  strategy:
+    type: "RollingUpdate"
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  envConfig:
+    ROOT_LOGGING_LEVEL: "info"
+    APP_LOGGING_LEVEL: "info"
+    WEB_LOGGING_LEVEL: "info"
+    OTEL_SERVICE_NAME: "pagopa-selfcare-backoffice-scheduler"
+    OTEL_SERVICE_ENVIRONMENT: "dev"
+    OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=dev"
+    OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.otel.svc:4317"
+    OTEL_EXPORTER_OTLP_PROTOCOL: grpc
+    OTEL_TRACES_EXPORTER: otlp
+    OTEL_METRICS_EXPORTER: otlp
+    OTEL_LOGS_EXPORTER: otlp
+    OTEL_TRACES_SAMPLER: "always_on"
+    API_CONFIG_SERVER_URI: "https://api.dev.platform.pagopa.it/apiconfig/auth/api/v1/"
+    API_CONFIG_SERVER_READ_TIMEOUT_MILLIS: "10000"
+    API_CONFIG_SERVER_CONNECTION_TIMEOUT_MILLIS: "10000"
+    IBAN_DELETION_REQUEST_JOB_EXECUTION_CRON: "0 0 * * * *"
+    MONGODB_NAME: pagopaBackoffice
+  envSecret:
+    OTEL_EXPORTER_OTLP_HEADERS: elastic-otel-token-header
+    PAGOPA_APIM_API_CONFIG_API_KEY_PAGOPA: pagopa-d-apim-api-config-key
+    MONGODB_CONNECTION_URI: cosmodbmongo-d-bopagopa-connection-string
+  keyvault:
+    name: "pagopa-d-selfcare-kv"
+    tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
+  nodeSelector: {}
+  tolerations: []
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node_type
+                operator: In
+                values:
+                  - user
+  azure:
+    workloadIdentityClientId: "7418877d-a8b6-4e6f-9434-99e13c249de4"
