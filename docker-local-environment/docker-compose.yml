@@ -47,6 +47,15 @@ services:
       mongo:
         condition: service_healthy
 
+  pagopa-api-config-mock:
+    container_name: pagopa-api-config-mock
+    build:
+      context: api-config-mock
+    ports:
+      - "8090:3000"
+    networks:
+      - pagopa-backoffice-net
+
 networks:
   pagopa-backoffice-net:
     name: pagopa-backoffice-net

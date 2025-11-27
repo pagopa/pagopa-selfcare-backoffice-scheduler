@@ -35,7 +35,8 @@ class ProcessingRequestSchedulerTest {
             type = TaskType.IBAN_DELETION,
             userId = "user1",
             data = mapOf("iban" to "IT123", "organizationId" to "ORG123"),
-            scheduledExecutionDate = Instant.now(),
+            requestedAt = Instant.now().toString(),
+            scheduledExecutionDate = Instant.now().toString(),
         )
 
     private val mockTask2 =
@@ -44,7 +45,8 @@ class ProcessingRequestSchedulerTest {
             type = TaskType.IBAN_DELETION,
             userId = "user2",
             data = mapOf("iban" to "IT456", "organizationId" to "ORG456"),
-            scheduledExecutionDate = Instant.now(),
+            requestedAt = Instant.now().toString(),
+            scheduledExecutionDate = Instant.now().toString(),
         )
 
     @Test

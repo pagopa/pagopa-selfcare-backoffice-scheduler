@@ -58,7 +58,7 @@ class IbanDeletionService(
         logger.debug("Marking task ${task.id} as IN_PROGRESS")
 
         task.status = TaskStatus.IN_PROGRESS
-        task.processedAt = Instant.now()
+        task.processedAt = Instant.now().toString()
 
         return repository.save(task)
     }
@@ -89,7 +89,7 @@ class IbanDeletionService(
         logger.debug("Marking task ${task.id} as COMPLETED")
 
         task.status = TaskStatus.COMPLETED
-        task.completedAt = Instant.now()
+        task.completedAt = Instant.now().toString()
 
         return repository.save(task)
     }
@@ -99,7 +99,7 @@ class IbanDeletionService(
         logger.debug("Marking task ${task.id} as CANCELED")
 
         task.status = TaskStatus.CANCELED
-        task.completedAt = Instant.now()
+        task.completedAt = Instant.now().toString()
 
         return repository.save(task)
     }
@@ -109,7 +109,7 @@ class IbanDeletionService(
         logger.debug("Marking task ${task.id} as FAILED")
 
         task.status = TaskStatus.FAILED
-        task.completedAt = Instant.now()
+        task.completedAt = Instant.now().toString()
 
         return repository.save(task)
     }
