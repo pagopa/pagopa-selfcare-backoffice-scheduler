@@ -34,6 +34,7 @@ object Dependencies {
   const val openTelemetryVersion = "1.37.0"
   const val mockitoVersion = "6.1.0"
   const val JsonNullableJacksonVersion = "0.2.8"
+  const val mongoDriverVersion = "4.0.4"
 }
 
 dependencyLocking { lockAllConfigurations() }
@@ -59,7 +60,7 @@ dependencies {
   implementation(
     "org.openapitools:jackson-databind-nullable:${Dependencies.JsonNullableJacksonVersion}"
   )
-
+  implementation("org.mongodb:mongodb-driver-reactivestreams:${Dependencies.mongoDriverVersion}")
   // tests
   testImplementation("org.mockito.kotlin:mockito-kotlin:${Dependencies.mockitoVersion}")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
