@@ -8,6 +8,7 @@ import java.time.Instant
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
 
 /**
  * Scheduler responsible for executing all programmed processing requests. It acts as a dispatcher
@@ -38,10 +39,13 @@ class ProcessingRequestScheduler(
             .flatMap(
                 { task ->
                     logger.info("Processing task ${task.id} of type ${task.type}")
-                    println(task)
                     // Dispatch to the appropriate service based on task type
                     when (task.type) {
-                        TaskType.IBAN_DELETION -> ibanDeletionService.processTask(task)
+                        TaskType.IBAN_DELETION ->
+                            ibanDeletionService.processTask(task).onErrorResume { error ->
+                                logger.error("Error processing task ${task.id}: ${error.message}")
+                                Mono.empty()
+                            }
                     }
                 },
                 MAX_CONCURRENCY,
