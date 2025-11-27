@@ -45,7 +45,8 @@ class IbanDeletionServiceTest {
                         "ibanValue" to "IT60X0542811101000000123456",
                     ),
                 userId = "user-123",
-                scheduledExecutionDate = Instant.now(),
+                requestedAt = Instant.now().toString(),
+                scheduledExecutionDate = Instant.now().toString(),
             )
 
         whenever(repository.save(any())).thenReturn(Mono.just(task))
