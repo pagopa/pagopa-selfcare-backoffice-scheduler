@@ -76,7 +76,6 @@ microservice-chart:
     IBAN_DELETION_REQUEST_JOB_EXECUTION_CRON: "0 0 * * * *"
     MONGODB_NAME: pagopaBackoffice
   envSecret:
-    OTEL_EXPORTER_OTLP_HEADERS: elastic-otel-token-header
     PAGOPA_APIM_API_CONFIG_API_KEY_PAGOPA: pagopa-d-apim-api-config-key
     MONGODB_CONNECTION_URI: cosmodbmongo-d-bopagopa-connection-string
   keyvault:
