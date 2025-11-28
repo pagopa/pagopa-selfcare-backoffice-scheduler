@@ -70,7 +70,7 @@ class IbanDeletionService(
 
         logger.info(
             "Deleting IBAN via ApiConfig: taskId=${task.id}, " +
-                "creditorInstitutionCode=$creditorInstitutionCode, ibanValue=$ibanValue"
+                "creditorInstitutionCode=$creditorInstitutionCode, ibanValue=****"
         )
 
         return apiConfigClient
