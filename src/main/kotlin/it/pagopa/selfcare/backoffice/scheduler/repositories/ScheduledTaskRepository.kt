@@ -7,8 +7,6 @@ import reactor.core.publisher.Flux
 
 interface ScheduledTaskRepository : ReactiveMongoRepository<ScheduledTask, String> {
 
-    @Query(
-        "{ 'status' : ?0, 'scheduledExecutionDate' : { \$lte: ?1 }, 'cancellationRequested' : false }"
-    )
+    @Query("{ 'status' : ?0, 'scheduledExecutionDate' : { \$lte: ?1 } }")
     fun findExecutableTasks(status: String, scheduledExecutionDate: String): Flux<ScheduledTask>
 }

@@ -35,7 +35,6 @@ data class ScheduledTask(
     val requestedAt: String,
     val scheduledExecutionDate: String,
     var status: TaskStatus = TaskStatus.PENDING,
-    var cancellationRequested: Boolean = false,
     var cancellationRequestedAt: String? = null,
     var processedAt: String? = null,
     var completedAt: String? = null,

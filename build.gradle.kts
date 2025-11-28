@@ -10,7 +10,7 @@ plugins {
   id("com.diffplug.spotless") version "8.0.0"
   id("org.sonarqube") version "7.0.1.6134"
   id("com.dipien.semantic-version") version "2.0.0" apply false
-  id("org.openapi.generator") version "7.17.0"
+  id("org.openapi.generator") version "7.4.0"
   jacoco
   application
 }
@@ -39,8 +39,7 @@ object Dependencies {
 dependencyLocking { lockAllConfigurations() }
 
 dependencyManagement {
-  imports { mavenBom("org.springframework.boot:spring-boot-dependencies:3.5.7") }
-  // Kotlin BOM
+  imports { mavenBom("org.springframework.boot:spring-boot-dependencies:3.2.11") }
   imports { mavenBom("org.jetbrains.kotlin:kotlin-bom:2.2.21") }
   imports { mavenBom("org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.10.2") }
 }
@@ -49,11 +48,14 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-actuator")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0")
+  implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
   implementation("co.elastic.logging:logback-ecs-encoder:${Dependencies.ecsLoggingVersion}")
   implementation("io.opentelemetry:opentelemetry-api:${Dependencies.openTelemetryVersion}")
   implementation(
