@@ -6,7 +6,6 @@
     "requestedAt": "2025-11-25T10:00:00Z",
     "scheduledExecutionDate": "2025-11-27T08:00:00Z",
     "status": "PENDING",
-    "cancellationRequested": false,
     "data": {
       "ibanValue": "IT0000000000000000000000001",
       "creditorInstitutionCode": "EC_001_BANK_A"
@@ -19,7 +18,6 @@
     "requestedAt": "2025-11-26T08:00:00Z",
     "scheduledExecutionDate": "2025-11-27T07:00:00Z",
     "status": "PENDING",
-    "cancellationRequested": true,
     "cancellationRequestedAt": "2025-11-26T08:30:00Z",
     "data": {
       "ibanValue": "IT0000000000000000000000002",

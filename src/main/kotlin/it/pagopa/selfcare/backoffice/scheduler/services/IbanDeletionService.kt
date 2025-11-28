@@ -36,7 +36,7 @@ class IbanDeletionService(
     fun processTask(task: ScheduledTask): Mono<ScheduledTask> {
         logger.info("Starting IBAN deletion task processing: taskId=${task.id}")
 
-        if (task.cancellationRequested) {
+        if (TaskStatus.CANCELED.equals(task.status)) {
             logger.info("Task ${task.id} cancellation requested, skipping execution")
             return markTaskAsCanceled(task)
         }
