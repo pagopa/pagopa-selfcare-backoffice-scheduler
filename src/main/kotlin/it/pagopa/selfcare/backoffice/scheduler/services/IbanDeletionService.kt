@@ -1,9 +1,9 @@
 package it.pagopa.selfcare.backoffice.scheduler.services
 
 import it.pagopa.selfcare.backoffice.scheduler.clients.ApiConfigClient
-import it.pagopa.selfcare.backoffice.scheduler.documents.ScheduledTask
-import it.pagopa.selfcare.backoffice.scheduler.documents.TaskStatus
-import it.pagopa.selfcare.backoffice.scheduler.repositories.ScheduledTaskRepository
+import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequest
+import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequestStatus
+import it.pagopa.selfcare.backoffice.scheduler.repositories.IbanDeletionRequestRepository
 import java.time.Instant
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono
 @Service
 class IbanDeletionService(
     private val apiConfigClient: ApiConfigClient,
-    private val repository: ScheduledTaskRepository,
+    private val repository: IbanDeletionRequestRepository,
 ) {
 
     companion object {
@@ -33,10 +33,10 @@ class IbanDeletionService(
      * @param task The scheduled task to process
      * @return A Mono emitting the updated task after processing
      */
-    fun processTask(task: ScheduledTask): Mono<ScheduledTask> {
+    fun processTask(task: IbanDeletionRequest): Mono<IbanDeletionRequest> {
         logger.info("Starting IBAN deletion task processing: taskId=${task.id}")
 
-        if (TaskStatus.CANCELED.equals(task.status)) {
+        if (IbanDeletionRequestStatus.CANCELED.equals(task.status)) {
             logger.info("Task ${task.id} cancellation requested, skipping execution")
             return markTaskAsCanceled(task)
         }
@@ -54,22 +54,22 @@ class IbanDeletionService(
     }
 
     /** Updates task status to IN_PROGRESS and saves it to the repository. */
-    private fun markTaskAsInProgress(task: ScheduledTask): Mono<ScheduledTask> {
-        logger.debug("Marking task ${task.id} as IN_PROGRESS")
+    private fun markTaskAsInProgress(request: IbanDeletionRequest): Mono<IbanDeletionRequest> {
+        logger.debug("Marking task ${request.id} as IN_PROGRESS")
 
-        task.status = TaskStatus.IN_PROGRESS
-        task.processedAt = Instant.now().toString()
+        request.status = IbanDeletionRequestStatus.IN_PROGRESS
+        request.requestedAt = Instant.now().toString()
 
-        return repository.save(task)
+        return repository.save(request)
     }
 
     /** Calls ApiConfig to delete the IBAN associated with the task. */
-    private fun deleteIbanViaApiConfig(task: ScheduledTask): Mono<ScheduledTask> {
-        val creditorInstitutionCode = extractRequiredData(task, CREDITOR_INSTITUTION_CODE_KEY)
-        val ibanValue = extractRequiredData(task, IBAN_VALUE_KEY)
+    private fun deleteIbanViaApiConfig(request: IbanDeletionRequest): Mono<IbanDeletionRequest> {
+        val creditorInstitutionCode = request.creditorInstitutionCode
+        val ibanValue = request.ibanValue
 
         logger.info(
-            "Deleting IBAN via ApiConfig: taskId=${task.id}, " +
+            "Deleting IBAN via ApiConfig: taskId=${request.id}, " +
                 "creditorInstitutionCode=$creditorInstitutionCode, ibanValue=****"
         )
 
@@ -79,53 +79,41 @@ class IbanDeletionService(
                 ibanValue = ibanValue,
             )
             .doOnSuccess { result ->
-                logger.debug("ApiConfig deletion successful: taskId=${task.id}, result=$result")
+                logger.debug("ApiConfig deletion successful: taskId=${request.id}, result=$result")
             }
-            .map { task }
+            .map { request }
     }
 
     /** Updates task status to COMPLETED and saves it to the repository. */
-    private fun markTaskAsCompleted(task: ScheduledTask): Mono<ScheduledTask> {
+    private fun markTaskAsCompleted(task: IbanDeletionRequest): Mono<IbanDeletionRequest> {
         logger.debug("Marking task ${task.id} as COMPLETED")
 
-        task.status = TaskStatus.COMPLETED
-        task.completedAt = Instant.now().toString()
+        task.status = IbanDeletionRequestStatus.COMPLETED
+        task.updatedAt = Instant.now().toString()
 
         return repository.save(task)
     }
 
     /** Updates task status to CANCELED and saves it to the repository. */
-    private fun markTaskAsCanceled(task: ScheduledTask): Mono<ScheduledTask> {
+    private fun markTaskAsCanceled(task: IbanDeletionRequest): Mono<IbanDeletionRequest> {
         logger.debug("Marking task ${task.id} as CANCELED")
 
-        task.status = TaskStatus.CANCELED
-        task.completedAt = Instant.now().toString()
+        task.status = IbanDeletionRequestStatus.CANCELED
+        task.updatedAt = Instant.now().toString()
 
         return repository.save(task)
     }
 
     /** Updates task status to FAILED and saves it to the repository. */
-    private fun markTaskAsFailed(task: ScheduledTask, error: Throwable): Mono<ScheduledTask> {
+    private fun markTaskAsFailed(
+        task: IbanDeletionRequest,
+        error: Throwable,
+    ): Mono<IbanDeletionRequest> {
         logger.debug("Marking task ${task.id} as FAILED")
 
-        task.status = TaskStatus.FAILED
-        task.completedAt = Instant.now().toString()
+        task.status = IbanDeletionRequestStatus.FAILED
+        task.updatedAt = Instant.now().toString()
 
         return repository.save(task)
-    }
-
-    /**
-     * Extracts a required data field from the task's data map.
-     *
-     * @param task The scheduled task
-     * @param key The key of the data field to extract
-     * @return The extracted value as a String
-     * @throws IllegalArgumentException if the required field is missing
-     */
-    private fun extractRequiredData(task: ScheduledTask, key: String): String {
-        return task.data[key]?.toString()
-            ?: throw IllegalArgumentException(
-                "Missing required data field '$key' in task ${task.id}"
-            )
     }
 }

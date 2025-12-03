@@ -1,10 +1,9 @@
 package it.pagopa.selfcare.backoffice.scheduler.services
 
 import it.pagopa.selfcare.backoffice.scheduler.clients.ApiConfigClient
-import it.pagopa.selfcare.backoffice.scheduler.documents.ScheduledTask
-import it.pagopa.selfcare.backoffice.scheduler.documents.TaskStatus
-import it.pagopa.selfcare.backoffice.scheduler.documents.TaskType
-import it.pagopa.selfcare.backoffice.scheduler.repositories.ScheduledTaskRepository
+import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequest
+import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequestStatus
+import it.pagopa.selfcare.backoffice.scheduler.repositories.IbanDeletionRequestRepository
 import java.time.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -23,9 +22,13 @@ class IbanDeletionServiceTest {
 
     @Mock private lateinit var apiConfigClient: ApiConfigClient
 
-    @Mock private lateinit var repository: ScheduledTaskRepository
+    @Mock private lateinit var repository: IbanDeletionRequestRepository
 
     private lateinit var service: IbanDeletionService
+
+    private val creditorInstitutionCodeMock = "77777777777"
+
+    private val ibanMock = "IT0000000000000000234"
 
     @BeforeEach
     fun setup() {
@@ -36,17 +39,14 @@ class IbanDeletionServiceTest {
     fun `should successfully process IBAN deletion task`() {
         // Given
         val task =
-            ScheduledTask(
-                id = "task-123",
-                type = TaskType.IBAN_DELETION,
-                data =
-                    mapOf(
-                        "creditorInstitutionCode" to "12345",
-                        "ibanValue" to "IT60X0542811101000000123456",
-                    ),
-                userId = "user-123",
+            IbanDeletionRequest(
+                id = "2",
                 requestedAt = Instant.now().toString(),
                 scheduledExecutionDate = Instant.now().toString(),
+                updatedAt = Instant.now().toString(),
+                status = IbanDeletionRequestStatus.PENDING,
+                creditorInstitutionCode = creditorInstitutionCodeMock,
+                ibanValue = ibanMock,
             )
 
         whenever(repository.save(any())).thenReturn(Mono.just(task))
@@ -56,8 +56,8 @@ class IbanDeletionServiceTest {
         // When & Then
         StepVerifier.create(service.processTask(task))
             .assertNext { result ->
-                assertEquals(TaskStatus.COMPLETED, result.status)
-                assertNotNull(result.completedAt)
+                assertEquals(IbanDeletionRequestStatus.COMPLETED, result.status)
+                assertNotNull(result.updatedAt)
             }
             .verifyComplete()
     }
