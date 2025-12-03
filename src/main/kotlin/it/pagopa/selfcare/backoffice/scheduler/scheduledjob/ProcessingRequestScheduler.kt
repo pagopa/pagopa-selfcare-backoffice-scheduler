@@ -1,8 +1,7 @@
 package it.pagopa.selfcare.backoffice.scheduler.scheduledjob
 
-import it.pagopa.selfcare.backoffice.scheduler.documents.TaskStatus
-import it.pagopa.selfcare.backoffice.scheduler.documents.TaskType
-import it.pagopa.selfcare.backoffice.scheduler.repositories.ScheduledTaskRepository
+import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequestStatus
+import it.pagopa.selfcare.backoffice.scheduler.repositories.IbanDeletionRequestRepository
 import it.pagopa.selfcare.backoffice.scheduler.services.IbanDeletionService
 import java.time.Instant
 import org.slf4j.LoggerFactory
@@ -16,7 +15,7 @@ import reactor.core.publisher.Mono
  */
 @Service
 class ProcessingRequestScheduler(
-    private val repository: ScheduledTaskRepository,
+    private val repository: IbanDeletionRequestRepository,
     private val ibanDeletionService: IbanDeletionService,
 ) {
 
@@ -28,34 +27,26 @@ class ProcessingRequestScheduler(
     @Scheduled(cron = "\${iban-deletion-request-scheduled.execution.cron}")
     fun executeScheduledIbanDeletionJobs() {
         logger.info(
-            "Scheduler Iban deletion job started: Fetching ${TaskStatus.PENDING} tasks to execute related type ${TaskType.IBAN_DELETION}"
+            "Scheduler Iban deletion job started: Fetching ${IbanDeletionRequestStatus.PENDING} requests"
         )
 
         repository
             .findExecutableTasks(
-                status = TaskStatus.PENDING.toString(),
+                status = IbanDeletionRequestStatus.PENDING.toString(),
                 scheduledExecutionDate = Instant.now().toString(),
             )
             .flatMap(
-                { task ->
-                    logger.info("Processing task ${task.id} of type ${task.type}")
-                    // Dispatch to the appropriate service based on task type
-                    when (task.type) {
-                        TaskType.IBAN_DELETION ->
-                            ibanDeletionService.processTask(task).onErrorResume { error ->
-                                logger.error("Error processing task ${task.id}: ${error.message}")
-                                Mono.empty()
-                            }
+                { request ->
+                    logger.info("Processing task ${request.id} ")
+                    ibanDeletionService.processTask(request).onErrorResume { error ->
+                        logger.error("Error processing task ${request.id}: ${error.message}")
+                        Mono.empty()
                     }
                 },
                 MAX_CONCURRENCY,
             )
             .subscribe(
-                { completedTask ->
-                    logger.info(
-                        "Processing task completed: ${completedTask.id} (${completedTask.type})"
-                    )
-                },
+                { completedTask -> logger.info("Processing task completed: ${completedTask.id}") },
                 { error ->
                     logger.error(
                         "Critical error during scheduler processing: ${error.message}",

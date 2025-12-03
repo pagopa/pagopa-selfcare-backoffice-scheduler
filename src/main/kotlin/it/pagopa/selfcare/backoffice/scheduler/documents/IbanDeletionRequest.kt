@@ -5,16 +5,8 @@ import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 import org.springframework.data.mongodb.core.mapping.FieldType
 
-/**
- * Defines the type of scheduled task. This is crucial for the scheduler to dispatch the task to the
- * correct handler.
- */
-enum class TaskType {
-    IBAN_DELETION
-}
-
 /** Definition of possible states for the task. */
-enum class TaskStatus {
+enum class IbanDeletionRequestStatus {
     PENDING,
     CANCELED,
     IN_PROGRESS,
@@ -27,15 +19,12 @@ enum class TaskStatus {
  * of scheduled background processing.
  */
 @Document(collection = "scheduledTasks")
-data class ScheduledTask(
+data class IbanDeletionRequest(
     @Id @Field(targetType = FieldType.STRING) val id: String,
-    val type: TaskType,
-    val data: Map<String, Any>,
-    val userId: String,
-    val requestedAt: String,
+    var requestedAt: String,
+    var updatedAt: String,
     val scheduledExecutionDate: String,
-    var status: TaskStatus = TaskStatus.PENDING,
-    var cancellationRequestedAt: String? = null,
-    var processedAt: String? = null,
-    var completedAt: String? = null,
+    var status: IbanDeletionRequestStatus = IbanDeletionRequestStatus.PENDING,
+    val creditorInstitutionCode: String,
+    val ibanValue: String,
 )
