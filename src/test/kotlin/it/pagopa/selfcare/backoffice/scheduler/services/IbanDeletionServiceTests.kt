@@ -3,7 +3,7 @@ package it.pagopa.selfcare.backoffice.scheduler.services
 import it.pagopa.selfcare.backoffice.scheduler.clients.ApiConfigClient
 import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequest
 import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequestStatus
-import it.pagopa.selfcare.backoffice.scheduler.repositories.IbanDeletionRequestRepository
+import it.pagopa.selfcare.backoffice.scheduler.repositories.IbanDeletionRequestsRepository
 import java.time.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -22,7 +22,7 @@ class IbanDeletionServiceTest {
 
     @Mock private lateinit var apiConfigClient: ApiConfigClient
 
-    @Mock private lateinit var repository: IbanDeletionRequestRepository
+    @Mock private lateinit var repository: IbanDeletionRequestsRepository
 
     private lateinit var service: IbanDeletionService
 
