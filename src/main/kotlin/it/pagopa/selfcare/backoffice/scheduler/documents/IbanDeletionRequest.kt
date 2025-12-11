@@ -18,7 +18,7 @@ enum class IbanDeletionRequestStatus {
  * Generic model that maps the 'scheduledTasks' collection in MongoDB. This entity supports any type
  * of scheduled background processing.
  */
-@Document(collection = "scheduledTasks")
+@Document(collection = "ibanDeletionRequest")
 data class IbanDeletionRequest(
     @Id @Field(targetType = FieldType.STRING) val id: String,
     var requestedAt: String,
