@@ -1,7 +1,7 @@
 package it.pagopa.selfcare.backoffice.scheduler.scheduledjob
 
 import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequestStatus
-import it.pagopa.selfcare.backoffice.scheduler.repositories.IbanDeletionRequestRepository
+import it.pagopa.selfcare.backoffice.scheduler.repositories.IbanDeletionRequestsRepository
 import it.pagopa.selfcare.backoffice.scheduler.services.IbanDeletionService
 import java.time.Instant
 import org.slf4j.LoggerFactory
@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono
  */
 @Service
 class ProcessingRequestScheduler(
-    private val repository: IbanDeletionRequestRepository,
+    private val repository: IbanDeletionRequestsRepository,
     private val ibanDeletionService: IbanDeletionService,
 ) {
 

@@ -2,7 +2,7 @@ package it.pagopa.selfcare.backoffice.scheduler.scheduledJob
 
 import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequest
 import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequestStatus
-import it.pagopa.selfcare.backoffice.scheduler.repositories.IbanDeletionRequestRepository
+import it.pagopa.selfcare.backoffice.scheduler.repositories.IbanDeletionRequestsRepository
 import it.pagopa.selfcare.backoffice.scheduler.scheduledjob.ProcessingRequestScheduler
 import it.pagopa.selfcare.backoffice.scheduler.services.IbanDeletionService
 import java.time.Instant
@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono
 @ExtendWith(MockitoExtension::class)
 class ProcessingRequestSchedulerTest {
 
-    @Mock private lateinit var repository: IbanDeletionRequestRepository
+    @Mock private lateinit var repository: IbanDeletionRequestsRepository
 
     @Mock private lateinit var ibanDeletionService: IbanDeletionService
 
