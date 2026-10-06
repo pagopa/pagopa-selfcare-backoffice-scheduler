@@ -69,6 +69,20 @@ To run the application use:
 ```
 
 
+### Audit logging
+
+Successful scheduled IBAN deletions emit an `IBAN_SCHEDULED_DELETE` event through the
+dedicated `auditLogs` logger. Its console appender uses `EcsAuditLogEncoder` to add
+`"audit":"true"` to the ECS JSON output without MDC or thread-local state.
+Audit events use JSON in every profile, including `local`, and are not propagated
+to the root logger, preventing duplicate output. The audit logger has an explicit
+`INFO` level independent of the application and root logging levels.
+
+The event includes `institutionTaxCode`, the deleted IBAN, and the scheduler service
+identifier as `userId`. It is emitted after ApiConfig completes successfully,
+before the task's `COMPLETED` status is saved. ApiConfig errors do not emit this
+success audit event.
+
 ### Testing 🧪
 
 #### Unit testing

@@ -1,6 +1,5 @@
 package it.pagopa.selfcare.backoffice.scheduler.services
 
-import it.pagopa.selfcare.backoffice.scheduler.audit.AuditLogger
 import it.pagopa.selfcare.backoffice.scheduler.clients.ApiConfigClient
 import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequest
 import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequestStatus
@@ -18,11 +17,11 @@ import reactor.core.publisher.Mono
 class IbanDeletionService(
     private val apiConfigClient: ApiConfigClient,
     private val repository: IbanDeletionRequestsRepository,
-    private val auditLogger: AuditLogger,
 ) {
 
     companion object {
         private val logger = LoggerFactory.getLogger(IbanDeletionService::class.java)
+        private val auditLogger = LoggerFactory.getLogger("auditLogs")
 
         // Keys for data fields in the task's 'data' map
         private const val CREDITOR_INSTITUTION_CODE_KEY = "creditorInstitutionCode"
@@ -82,7 +81,6 @@ class IbanDeletionService(
             )
             .doOnSuccess { result ->
                 auditLogger.info(
-                    logger,
                     "event=IBAN_SCHEDULED_DELETE institutionTaxCode={} IBAN={} userId={}",
                     creditorInstitutionCode,
                     ibanValue,
