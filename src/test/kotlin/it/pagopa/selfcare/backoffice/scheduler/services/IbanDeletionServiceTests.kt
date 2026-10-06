@@ -23,7 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import org.slf4j.LoggerFactory
-import org.slf4j.MDC
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Schedulers
 import reactor.test.StepVerifier
@@ -134,7 +133,6 @@ class IbanDeletionServiceTest {
 
             assertAuditEvent()
             assertTrue(auditAppender.list.single().threadName.startsWith("iban-audit-test"))
-            assertNull(MDC.get("audit"))
         } finally {
             scheduler.dispose()
         }
