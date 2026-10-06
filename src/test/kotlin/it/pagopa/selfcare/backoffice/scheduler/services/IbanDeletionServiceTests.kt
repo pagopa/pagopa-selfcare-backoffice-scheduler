@@ -1,5 +1,6 @@
 package it.pagopa.selfcare.backoffice.scheduler.services
 
+import it.pagopa.selfcare.backoffice.scheduler.audit.AuditLogger
 import it.pagopa.selfcare.backoffice.scheduler.clients.ApiConfigClient
 import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequest
 import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequestStatus
@@ -26,13 +27,15 @@ class IbanDeletionServiceTest {
 
     private lateinit var service: IbanDeletionService
 
+    private val auditLogger = AuditLogger()
+
     private val creditorInstitutionCodeMock = "77777777777"
 
     private val ibanMock = "IT0000000000000000234"
 
     @BeforeEach
     fun setup() {
-        service = IbanDeletionService(apiConfigClient, repository)
+        service = IbanDeletionService(apiConfigClient, repository, auditLogger)
     }
 
     @Test

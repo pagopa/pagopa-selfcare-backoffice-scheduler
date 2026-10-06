@@ -5,10 +5,10 @@ import it.pagopa.selfcare.backoffice.scheduler.clients.ApiConfigClient
 import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequest
 import it.pagopa.selfcare.backoffice.scheduler.documents.IbanDeletionRequestStatus
 import it.pagopa.selfcare.backoffice.scheduler.repositories.IbanDeletionRequestsRepository
+import java.time.Instant
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
-import java.time.Instant
 
 /**
  * Service responsible for processing IBAN deletion tasks. Handles the complete lifecycle of IBAN
