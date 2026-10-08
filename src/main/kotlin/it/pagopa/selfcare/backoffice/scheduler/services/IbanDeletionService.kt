@@ -21,6 +21,7 @@ class IbanDeletionService(
 
     companion object {
         private val logger = LoggerFactory.getLogger(IbanDeletionService::class.java)
+        private val auditLogger = LoggerFactory.getLogger("auditLogs")
 
         // Keys for data fields in the task's 'data' map
         private const val CREDITOR_INSTITUTION_CODE_KEY = "creditorInstitutionCode"
@@ -79,6 +80,12 @@ class IbanDeletionService(
                 ibanValue = ibanValue,
             )
             .doOnSuccess { result ->
+                auditLogger.info(
+                    "event=IBAN_SCHEDULED_DELETE institutionTaxCode={} IBAN={} userId={}",
+                    creditorInstitutionCode,
+                    ibanValue,
+                    "pagopa-selfcare-backoffice-scheduler",
+                )
                 logger.debug("ApiConfig deletion successful: taskId=${request.id}, result=$result")
             }
             .map { request }
