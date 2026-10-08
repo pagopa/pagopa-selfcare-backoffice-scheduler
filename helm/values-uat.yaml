@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: "pagopa-selfcare-backoffice-scheduler"
   image:
     repository: pagopaucommonacr.azurecr.io/pagopaselfcarebackofficescheduler
-    tag: "0.2.2"
+    tag: "0.2.3"
     pullPolicy: Always
   livenessProbe:
     httpGet:
