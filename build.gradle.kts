@@ -55,7 +55,7 @@ dependencies {
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0")
-  implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
+  implementation("com.fasterxml.jackson.core:jackson-databind:2.21.5")
   implementation("co.elastic.logging:logback-ecs-encoder:${Dependencies.ecsLoggingVersion}")
   implementation("io.opentelemetry:opentelemetry-api:${Dependencies.openTelemetryVersion}")
   implementation(
