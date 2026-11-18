@@ -17,7 +17,7 @@ plugins {
 
 group = "it.pagopa.selfcare.backoffice.scheduler"
 
-version = "0.2.3-SNAPSHOT"
+version = "0.2.4-SNAPSHOT"
 
 description = "pagopa-selfcare-backoffice-scheduler"
 
