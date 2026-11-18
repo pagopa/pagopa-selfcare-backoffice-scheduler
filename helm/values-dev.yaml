@@ -58,6 +58,7 @@ microservice-chart:
       maxSurge: 1
       maxUnavailable: 0
   envConfig:
+    JAVA_TOOL_OPTIONS: "-XX:-UseBASE64Intrinsics -XX:UseAVX=2"
     ROOT_LOGGING_LEVEL: "info"
     APP_LOGGING_LEVEL: "info"
     WEB_LOGGING_LEVEL: "info"
